@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xsi:type="MailApp">
+
+  <Id>9fdf8b89-6d2e-4f55-9fcb-111111111111</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>Local</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="Recipient Probe"/>
+  <Description DefaultValue="Logs compose recipients for validation."/>
+
+  <IconUrl DefaultValue="https://localhost:7123/assets/icon-80.png"/>
+  <HighResolutionIconUrl DefaultValue="https://localhost:7123/assets/icon-80.png"/>
+  <SupportUrl DefaultValue="https://localhost:7123/taskpane.html"/>
+
+  <AppDomains>
+    <AppDomain>https://localhost:7123</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Mailbox"/>
+  </Hosts>
+
+  <Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.8"/>
+    </Sets>
+  </Requirements>
+
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://localhost:7123/taskpane.html"/>
+        <RequestedHeight>250</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+    <Form xsi:type="ItemEdit">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://localhost:7123/taskpane.html"/>
+        <RequestedHeight>250</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+  </FormSettings>
+
+  <Permissions>ReadWriteItem</Permissions>
+
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Edit"/>
+  </Rule>
+
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
+
+  <VersionOverrides
+    xmlns="http://schemas.microsoft.com/office/mailappversionoverrides"
+    xsi:type="VersionOverridesV1_0">
+
+    <Requirements>
+      <bt:Sets DefaultMinVersion="1.8">
+        <bt:Set Name="Mailbox"/>
+      </bt:Sets>
+    </Requirements>
+
+    <Hosts>
+      <Host xsi:type="MailHost">
+        <DesktopFormFactor>
+          <FunctionFile resid="Commands.Url"/>
+
+          <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+            <OfficeTab id="TabDefault">
+              <Group id="Probe.Group">
+                <Label resid="Probe.GroupLabel"/>
+
+                <Control xsi:type="Button" id="Probe.OpenPane">
+                  <Label resid="Probe.ButtonLabel"/>
+                  <Supertip>
+                    <Title resid="Probe.ButtonLabel"/>
+                    <Description resid="Probe.ButtonDescription"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16" DefaultValue="https://localhost:7123/assets/icon-16.png"/>
+        <bt:Image id="Icon.32" DefaultValue="https://localhost:7123/assets/icon-32.png"/>
+        <bt:Image id="Icon.80" DefaultValue="https://localhost:7123/assets/icon-80.png"/>
+      </bt:Images>
+
+      <bt:Urls>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:7123/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://localhost:7123/commands.html"/>
+      </bt:Urls>
+
+      <bt:ShortStrings>
+        <bt:String id="Probe.GroupLabel" DefaultValue="Recipient Probe"/>
+        <bt:String id="Probe.ButtonLabel" DefaultValue="Log Recipients"/>
+      </bt:ShortStrings>
+
+      <bt:LongStrings>
+        <bt:String id="Probe.ButtonDescription" DefaultValue="Open the pane and log To/Cc/Bcc recipient details to the console."/>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>
