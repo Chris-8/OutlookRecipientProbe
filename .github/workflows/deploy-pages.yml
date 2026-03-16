@@ -1,0 +1,61 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Compute Pages base URL
+        id: pages-base-url
+        shell: pwsh
+        run: |
+          $repoName = "${{ github.event.repository.name }}"
+          $owner = "${{ github.repository_owner }}"
+          if ($repoName -ieq "$owner.github.io") {
+            $baseUrl = "https://$owner.github.io"
+          } else {
+            $baseUrl = "https://$owner.github.io/$repoName"
+          }
+
+          "value=$baseUrl" >> $env:GITHUB_OUTPUT
+
+      - name: Build Pages package
+        shell: pwsh
+        run: |
+          ./scripts/publish-pages.ps1 `
+            -BaseUrl "${{ steps.pages-base-url.outputs.value }}" `
+            -OutputDir "./publish/pages"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./publish/pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
